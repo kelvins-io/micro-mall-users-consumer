@@ -1,10 +1,6 @@
 package vars
 
-import (
-	"gitee.com/kelvins-io/kelvins"
-)
-
 var (
-	App                *kelvins.QueueApplication
+	AppName            = ""
 	EmailConfigSetting *EmailConfigSettingS
 )

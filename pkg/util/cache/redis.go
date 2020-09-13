@@ -89,5 +89,5 @@ func buildRedisKey(key string) string {
 		key = fmt.Sprintf("%x", m.Sum(nil))
 	}
 
-	return vars.App.Name + "-" + key
+	return vars.AppName + "-" + key
 }

@@ -1,15 +1,16 @@
 package main
 
 import (
+	"gitee.com/cristiane/micro-mall-users-consumer/startup"
 	"gitee.com/cristiane/micro-mall-users-consumer/vars"
 	"gitee.com/kelvins-io/kelvins"
-	"gitee.com/cristiane/micro-mall-users-consumer/startup"
 	"gitee.com/kelvins-io/kelvins/app"
 )
 
 const APP_NAME = "micro-mall-users-consumer"
 
 func main() {
+	vars.AppName = APP_NAME
 	application := &kelvins.QueueApplication{
 		Application: &kelvins.Application{
 			LoadConfig: startup.LoadConfig,
@@ -19,5 +20,4 @@ func main() {
 		GetNamedTaskFuncs: startup.GetNamedTaskFuncs,
 	}
 	app.RunQueueApplication(application)
-	vars.App = application
 }
