@@ -9,7 +9,20 @@ const (
 	TableUser             = "user"
 	TableMerchantInfo     = "merchant"
 	TableVerifyCodeRecord = "verify_code_record"
+	TableAccount          = "account"
 )
+
+type Account struct {
+	AccountCode string    `xorm:"'account_code' not null comment('账户code') index unique(account_index) CHAR(36)"`
+	Owner       string    `xorm:"'owner' not null comment('账户所有者') unique(account_index) CHAR(36)"`
+	Balance     string    `xorm:"'balance' not null default 0.0000000000000000 comment('账户余额') DECIMAL(32,16)"`
+	CoinType    int       `xorm:"'coin_type' not null default 1 comment('币种类型，1-rmb，2-usdt') unique(account_index) TINYINT"`
+	CoinDesc    string    `xorm:"'coin_desc' comment('币种描述') VARCHAR(255)"`
+	State       int       `xorm:"'state' not null comment('状态，1无效，2锁定，3正常') TINYINT(1)"`
+	AccountType int       `xorm:"'account_type' not null default 0 comment('账户类型，1-个人账户，2-公司账户，3-系统账户') unique(account_index) TINYINT"`
+	CreateTime  time.Time `xorm:"'create_time' not null default CURRENT_TIMESTAMP comment('创建时间') DATETIME"`
+	UpdateTime  time.Time `xorm:"'update_time' not null default CURRENT_TIMESTAMP comment('更新时间') DATETIME"`
+}
 
 type VerifyCodeRecord struct {
 	Id           int       `xorm:"'id' not null pk autoincr comment('自增id') INT"`
