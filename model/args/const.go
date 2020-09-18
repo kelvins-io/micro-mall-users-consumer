@@ -11,6 +11,11 @@ type MerchantsMaterialInfo struct {
 }
 
 const (
+	RpcServiceMicroMallUsers = "micro-mall-users"
+	RpcServiceMicroMallShop  = "micro-mall-shop"
+)
+
+const (
 	UserStateEventTypeRegister  = 10010
 	UserStateEventTypeLogin     = 10011
 	UserStateEventTypeLogout    = 10012
