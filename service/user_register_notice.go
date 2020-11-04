@@ -4,13 +4,11 @@ import (
 	"context"
 	"fmt"
 	"gitee.com/cristiane/micro-mall-users-consumer/model/args"
-	"gitee.com/cristiane/micro-mall-users-consumer/pkg/code"
 	"gitee.com/cristiane/micro-mall-users-consumer/pkg/util"
 	"gitee.com/cristiane/micro-mall-users-consumer/pkg/util/email"
 	"gitee.com/cristiane/micro-mall-users-consumer/proto/micro_mall_pay_proto/pay_business"
-	"gitee.com/cristiane/micro-mall-users-consumer/proto/micro_mall_users_proto/users"
+	"gitee.com/cristiane/micro-mall-users-consumer/repository"
 	"gitee.com/cristiane/micro-mall-users-consumer/vars"
-	"gitee.com/kelvins-io/common/errcode"
 	"gitee.com/kelvins-io/common/json"
 	"gitee.com/kelvins-io/kelvins"
 )
@@ -38,59 +36,37 @@ func UserRegisterNoticeConsume(ctx context.Context, body string) error {
 		return err
 	}
 	// 获取用户信息
-	serverName := args.RpcServiceMicroMallUsers
+	user, err := repository.GetUserByPhone(notice.CountryCode, notice.Phone)
+	if err != nil {
+		kelvins.ErrLogger.Errorf(ctx, "GetUserByPhone ,err: %v, req: %+v", err, notice)
+		return err
+	}
+	// 为用户初始化账户
+	serverName := args.RpcServiceMicroMallPay
 	conn, err := util.GetGrpcClient(serverName)
 	if err != nil {
 		kelvins.ErrLogger.Errorf(ctx, "GetGrpcClient %v,err: %v", serverName, err)
 		return err
 	}
 	defer conn.Close()
-
-	client := users.NewUsersServiceClient(conn)
-	r := users.GetUserInfoByPhoneRequest{
-		CountryCode: notice.CountryCode,
-		Phone:       notice.Phone,
-	}
-	rsp, err := client.GetUserInfoByPhone(ctx, &r)
-	if err != nil {
-		kelvins.ErrLogger.Errorf(ctx, "GetUserInfoByPhone %v,err: %v, r: %+v", serverName, err, r)
-		return err
-	}
-	if rsp.Common.Code != users.RetCode_SUCCESS {
-		kelvins.ErrLogger.Errorf(ctx, "GetUserInfoByPhone %v,not ok : %v, rsp: %+v", serverName, err, rsp)
-		return fmt.Errorf(rsp.Common.Msg)
-	}
-	if rsp.Info == nil || rsp.Info.AccountId == "" {
-		kelvins.ErrLogger.Errorf(ctx, "GetUserInfoByPhone %v,accountId null : %v, rsp: %+v", serverName, err, rsp)
-		return fmt.Errorf(errcode.GetErrMsg(code.UserNotExist))
-	}
-
-	// 为用户初始化账户
-	serverName = args.RpcServiceMicroMallPay
-	conn, err = util.GetGrpcClient(serverName)
-	if err != nil {
-		kelvins.ErrLogger.Errorf(ctx, "GetGrpcClient %v,err: %v", serverName, err)
-		return err
-	}
-	defer conn.Close()
-	r2 := pay_business.CreateAccountRequest{
-		Owner:       rsp.Info.AccountId,
+	accountReq := pay_business.CreateAccountRequest{
+		Owner:       user.AccountId,
 		AccountType: pay_business.AccountType_Person,
 		CoinType:    pay_business.CoinType_CNY,
-		Balance:     "100.123",
+		Balance:     "100000.12399",
 	}
-	client2 := pay_business.NewPayBusinessServiceClient(conn)
-	rsp2, err := client2.CreateAccount(ctx, &r2)
+	client := pay_business.NewPayBusinessServiceClient(conn)
+	accountRsp, err := client.CreateAccount(ctx, &accountReq)
 	if err != nil {
-		kelvins.ErrLogger.Errorf(ctx, "CreateAccount %v,err: %v, r: %+v", serverName, err, r2)
+		kelvins.ErrLogger.Errorf(ctx, "CreateAccount %v,err: %v, r: %+v", serverName, err, accountReq)
 		return err
 	}
-	if rsp2.Common.Code != pay_business.RetCode_SUCCESS {
-		kelvins.ErrLogger.Errorf(ctx, "CreateAccount %v,not ok : %v, rsp: %+v", serverName, err, rsp)
-		if rsp2.Common.Code == pay_business.RetCode_ERROR {
-			return fmt.Errorf(rsp.Common.Msg)
-		} else if rsp2.Common.Code == pay_business.RetCode_USER_NOT_EXIST {
-			return fmt.Errorf(rsp.Common.Msg)
+	if accountRsp.Common.Code != pay_business.RetCode_SUCCESS {
+		kelvins.ErrLogger.Errorf(ctx, "CreateAccount %v,not ok : %v, rsp: %+v", serverName, err, accountRsp)
+		if accountRsp.Common.Code == pay_business.RetCode_ERROR {
+			return fmt.Errorf(accountRsp.Common.Msg)
+		} else if accountRsp.Common.Code == pay_business.RetCode_USER_NOT_EXIST {
+			return fmt.Errorf(accountRsp.Common.Msg)
 		}
 	}
 	// 发送注册成功邮件
