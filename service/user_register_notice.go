@@ -36,7 +36,7 @@ func UserRegisterNoticeConsume(ctx context.Context, body string) error {
 		return err
 	}
 	// 获取用户信息
-	user, err := repository.GetUserByPhone(notice.CountryCode, notice.Phone)
+	user, err := repository.GetUserByPhone("account_id", notice.CountryCode, notice.Phone)
 	if err != nil {
 		kelvins.ErrLogger.Errorf(ctx, "GetUserByPhone ,err: %v, req: %+v", err, notice)
 		return err
@@ -53,7 +53,7 @@ func UserRegisterNoticeConsume(ctx context.Context, body string) error {
 		Owner:       user.AccountId,
 		AccountType: pay_business.AccountType_Person,
 		CoinType:    pay_business.CoinType_CNY,
-		Balance:     "100000.12399",
+		Balance:     "1000000000.12399",
 	}
 	client := pay_business.NewPayBusinessServiceClient(conn)
 	accountRsp, err := client.CreateAccount(ctx, &accountReq)
