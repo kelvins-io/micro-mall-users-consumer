@@ -5,10 +5,8 @@ import (
 	"fmt"
 	"gitee.com/cristiane/micro-mall-users-consumer/model/args"
 	"gitee.com/cristiane/micro-mall-users-consumer/pkg/util"
-	"gitee.com/cristiane/micro-mall-users-consumer/pkg/util/email"
 	"gitee.com/cristiane/micro-mall-users-consumer/proto/micro_mall_pay_proto/pay_business"
 	"gitee.com/cristiane/micro-mall-users-consumer/repository"
-	"gitee.com/cristiane/micro-mall-users-consumer/vars"
 	"gitee.com/kelvins-io/common/json"
 	"gitee.com/kelvins-io/kelvins"
 )
@@ -41,6 +39,10 @@ func UserRegisterNoticeConsume(ctx context.Context, body string) error {
 		kelvins.ErrLogger.Errorf(ctx, "GetUserByPhone ,err: %v, req: %+v", err, notice)
 		return err
 	}
+	if user.AccountId == "" {
+		kelvins.ErrLogger.Errorf(ctx, "GetUserByPhone AccountId empty")
+		return fmt.Errorf("user AccountId empty")
+	}
 	// 为用户初始化账户
 	serverName := args.RpcServiceMicroMallPay
 	conn, err := util.GetGrpcClient(serverName)
@@ -53,7 +55,7 @@ func UserRegisterNoticeConsume(ctx context.Context, body string) error {
 		Owner:       user.AccountId,
 		AccountType: pay_business.AccountType_Person,
 		CoinType:    pay_business.CoinType_CNY,
-		Balance:     "1000000000.12399",
+		Balance:     "999999999999999999.9999",
 	}
 	client := pay_business.NewPayBusinessServiceClient(conn)
 	accountRsp, err := client.CreateAccount(ctx, &accountReq)
@@ -70,13 +72,13 @@ func UserRegisterNoticeConsume(ctx context.Context, body string) error {
 		}
 	}
 	// 发送注册成功邮件
-	emailNotice := fmt.Sprintf(templateUserRegister, notice.CountryCode, notice.Phone, notice.Time, notice.State)
-	err = email.SendEmailNotice(ctx, "565608463@qq.com", vars.AppName, emailNotice)
-
-	if err != nil {
-		kelvins.ErrLogger.Info(ctx, "SendEmailNotice err, emailNotice: %v", emailNotice)
-		return err
-	}
+	//emailNotice := fmt.Sprintf(templateUserRegister, notice.CountryCode, notice.Phone, notice.Time, notice.State)
+	//err = email.SendEmailNotice(ctx, "565608463@qq.com", vars.AppName, emailNotice)
+	//
+	//if err != nil {
+	//	kelvins.ErrLogger.Info(ctx, "SendEmailNotice err, emailNotice: %v", emailNotice)
+	//	return err
+	//}
 
 	return nil
 }
