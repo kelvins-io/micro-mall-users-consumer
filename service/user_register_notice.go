@@ -64,10 +64,11 @@ func UserRegisterNoticeConsume(ctx context.Context, body string) error {
 		return err
 	}
 	if accountRsp.Common.Code != pay_business.RetCode_SUCCESS {
-		kelvins.ErrLogger.Errorf(ctx, "CreateAccount %v,not ok : %v, rsp: %+v", serverName, err, accountRsp)
-		if accountRsp.Common.Code == pay_business.RetCode_ERROR {
-			return fmt.Errorf(accountRsp.Common.Msg)
-		} else if accountRsp.Common.Code == pay_business.RetCode_USER_NOT_EXIST {
+		switch accountRsp.Common.Code {
+		case pay_business.RetCode_ACCOUNT_EXIST:
+			return nil
+		case pay_business.RetCode_ERROR,pay_business.RetCode_USER_NOT_EXIST:
+			kelvins.ErrLogger.Errorf(ctx, "CreateAccount %v,not ok : %v, rsp: %+v", serverName, err, accountRsp)
 			return fmt.Errorf(accountRsp.Common.Msg)
 		}
 	}

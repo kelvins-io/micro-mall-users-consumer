@@ -12,3 +12,4 @@
 *.out
 logs/
 vendor
+micro-mall-users-consumer
