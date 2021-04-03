@@ -12,4 +12,5 @@
 *.out
 logs/
 vendor
+etc/app.ini
 micro-mall-users-consumer
