@@ -9,7 +9,7 @@ Level = "debug"
 [kelvins-mysql]
 Host = "127.0.0.1:3306"
 UserName = "root"
-Password = "07030501310"
+Password = "fasdfa"
 DBName = "micro_mall_user"
 Charset = "utf8"
 PoolNum =  10
@@ -20,7 +20,7 @@ ParseTime = true
 
 [kelvins-redis]
 Host = "127.0.0.1:6379"
-Password = "07030501310"
+Password = "uytrutyu"
 DB = 1
 PoolNum = 10
 
@@ -33,7 +33,7 @@ WorkerConcurrency = 1
 [kelvins-queue-amqp]
 Broker = "amqp://micro-mall:szJ9aePR@localhost:5672/micro-mall"
 DefaultQueue = "user_register_notice"
-ResultBackend = "redis://07030501310@127.0.0.1:6379/8"
+ResultBackend = "redis://urtyuryt@127.0.0.1:6379/8"
 ResultsExpireIn = 3600
 Exchange = "user_register_notice"
 ExchangeType = "direct"
@@ -41,7 +41,7 @@ BindingKey = "user_register_notice"
 
 
 [email-config]
-User = "1225807604@qq.com"
-Password = "glxggszbnrnigcii"
+User = "urtyu@qq.com"
+Password = "urtyiirtirty"
 Host = "smtp.qq.com"
 Port = "465"
