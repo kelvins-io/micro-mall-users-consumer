@@ -14,3 +14,8 @@ logs/
 vendor
 etc/app.ini
 micro-mall-users-consumer
+micro-mall-users-consumer.pid
+micro-mall-users--consumer-darwin-amd64
+micro-mall-users-consumer-linux-amd64
+micro-mall-users-consumer-windows-amd64.exe
+micro-mall-users-consumer-windows-amd64
