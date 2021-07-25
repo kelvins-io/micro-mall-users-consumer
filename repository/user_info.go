@@ -15,6 +15,9 @@ func GetUserNameByUid(uid int) (*mysql.User, error) {
 func GetUserByPhone(sqlSelect, countryCode, phone string) (*mysql.User, error) {
 	var user mysql.User
 	var err error
-	_, err = kelvins.XORM_DBEngine.Table(mysql.TableUser).Select(sqlSelect).Where("country_code = ? and phone = ?", countryCode, phone).Get(&user)
+	_, err = kelvins.XORM_DBEngine.Table(mysql.TableUser).Select(sqlSelect).
+		Where("country_code = ?", countryCode).
+		Where("phone = ?", phone).
+		Get(&user)
 	return &user, err
 }

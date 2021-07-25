@@ -11,10 +11,28 @@ type MerchantsMaterialInfo struct {
 }
 
 const (
-	RpcServiceMicroMallUsers = "micro-mall-users"
-	RpcServiceMicroMallShop  = "micro-mall-shop"
-	RpcServiceMicroMallPay   = "micro-mall-pay"
+	RpcServiceMicroMallPay = "micro-mall-pay"
 )
+
+const (
+	UserRegisterTemplate      = "用户: +%v-%v, 于%v 注册成功, 状态为: %v"
+	UserCreateAccountTemplate = "用户: +%v-%v, 于%v 初始个人账户成功，金额为: %v"
+	UserPwdResetTemplate      = "用户: %v, 于%v, 重置密码"
+)
+
+const (
+	UserStateInit       = 0
+	UserStateVerifyIng  = 1
+	UserStateVerifyDeny = 2
+	UserStateVerifyOk   = 3
+)
+
+var UserStateText = map[int]string{
+	UserStateInit:       "用户初始化",
+	UserStateVerifyIng:  "用户审核中",
+	UserStateVerifyDeny: "用户审核拒绝",
+	UserStateVerifyOk:   "用户审核通过",
+}
 
 const (
 	UserStateEventTypeRegister  = 10010

@@ -11,10 +11,6 @@ import (
 	"gitee.com/kelvins-io/kelvins"
 )
 
-const (
-	templateUserPwdReset = "用户: %v, 于%v, 重置密码"
-)
-
 func UserStateNoticeConsume(ctx context.Context, body string) error {
 	var businessMsg args.CommonBusinessMsg
 	var err error
@@ -37,10 +33,13 @@ func UserStateNoticeConsume(ctx context.Context, body string) error {
 		kelvins.ErrLogger.Errorf(ctx, "GetUserByUid err: %v, uid: %v", err, notice.Uid)
 		return err
 	}
-	err = email.SendEmailNotice(ctx, "565608463@qq.com",
-		vars.AppName, fmt.Sprintf(templateUserPwdReset, userInfo.UserName, notice.Time))
-	if err != nil {
-		return err
+
+	emailNotice := fmt.Sprintf(args.UserPwdResetTemplate, userInfo.UserName, notice.Time)
+	for _, receiver := range vars.EmailNoticeSetting.Receivers {
+		err = email.SendEmailNotice(ctx, receiver, vars.AppName, emailNotice)
+		if err != nil {
+			kelvins.ErrLogger.Info(ctx, "SendEmailNotice err %v, emailNotice: %v", err, emailNotice)
+		}
 	}
 
 	return nil

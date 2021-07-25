@@ -27,7 +27,7 @@ PoolNum = 10
 
 [kelvins-queue-server]
 CustomQueueList = "user_register_notice,user_state_notice"
-WorkerConcurrency = 1
+WorkerConcurrency = 3
 
 
 [kelvins-queue-amqp]
@@ -45,3 +45,6 @@ User = "urtyu@qq.com"
 Password = "urtyiirtirty"
 Host = "smtp.qq.com"
 Port = "465"
+
+[email-notice]
+Receivers = "xx@qq.com"
