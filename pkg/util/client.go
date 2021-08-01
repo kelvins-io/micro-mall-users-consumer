@@ -8,7 +8,7 @@ import (
 
 
 func GetGrpcClient(serverName string) (*grpc.ClientConn, error) {
-	client, err := client_conn.NewConn(serverName)
+	client, err := client_conn.NewConnClient(serverName)
 	if err != nil {
 		return nil, err
 	}
