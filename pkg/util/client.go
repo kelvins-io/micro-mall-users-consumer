@@ -14,3 +14,11 @@ func GetGrpcClient(serverName string) (*grpc.ClientConn, error) {
 	}
 	return client.GetConn(context.Background())
 }
+
+func GetHttpEndpoints(serverName string) ([]string, error) {
+	client, err := client_conn.NewConnClient(serverName)
+	if err != nil {
+		return nil, err
+	}
+	return client.GetEndpoints(context.Background())
+}
