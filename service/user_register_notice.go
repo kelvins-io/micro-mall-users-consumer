@@ -54,7 +54,7 @@ func UserRegisterNoticeConsume(ctx context.Context, body string) error {
 
 	// 为用户初始化账户
 	serverName := args.RpcServiceMicroMallPay
-	conn, err := util.GetGrpcClient(serverName)
+	conn, err := util.GetGrpcClient(ctx, serverName)
 	if err != nil {
 		kelvins.ErrLogger.Errorf(ctx, "GetGrpcClient %v,err: %v", serverName, err)
 		return err
