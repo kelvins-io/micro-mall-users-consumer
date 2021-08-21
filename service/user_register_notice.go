@@ -59,7 +59,7 @@ func UserRegisterNoticeConsume(ctx context.Context, body string) error {
 		kelvins.ErrLogger.Errorf(ctx, "GetGrpcClient %v,err: %v", serverName, err)
 		return err
 	}
-	defer conn.Close()
+	//defer conn.Close()
 	balanceInit := "1.9999"
 	accountReq := pay_business.CreateAccountRequest{
 		Owner:       user.AccountId,
