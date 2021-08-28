@@ -27,7 +27,7 @@ func UserStateNoticeConsume(ctx context.Context, body string) error {
 	if err != nil {
 		return err
 	}
-	kelvins.ErrLogger.Info(ctx, "UserStateNoticeConsume content: %v", notice)
+	kelvins.ErrLogger.Info(ctx, "UserStateNoticeConsume content: %v", json.MarshalToStringNoError(notice))
 	userInfo, err := repository.GetUserNameByUid(notice.Uid)
 	if err != nil {
 		kelvins.ErrLogger.Errorf(ctx, "GetUserByUid err: %v, uid: %v", err, notice.Uid)

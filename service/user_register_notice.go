@@ -36,11 +36,11 @@ func UserRegisterNoticeConsume(ctx context.Context, body string) error {
 	// 获取用户信息
 	user, err := repository.GetUserByPhone("id,account_id", notice.CountryCode, notice.Phone)
 	if err != nil {
-		kelvins.ErrLogger.Errorf(ctx, "GetUserByPhone ,err: %v, req: %+v", err, notice)
+		kelvins.ErrLogger.Errorf(ctx, "GetUserByPhone ,err: %v, req: %v", err, json.MarshalToStringNoError(notice))
 		return err
 	}
 	if user.Id <= 0 {
-		kelvins.ErrLogger.Errorf(ctx, "GetUserByPhone user not exist %v-%v user: %+v", notice.CountryCode, notice.Phone, user)
+		kelvins.ErrLogger.Errorf(ctx, "GetUserByPhone user not exist %v-%v user: %v", notice.CountryCode, notice.Phone, json.MarshalToStringNoError(user))
 		return fmt.Errorf("user not exist")
 	}
 	// 发送注册成功邮件
@@ -70,7 +70,7 @@ func UserRegisterNoticeConsume(ctx context.Context, body string) error {
 	client := pay_business.NewPayBusinessServiceClient(conn)
 	accountRsp, err := client.CreateAccount(ctx, &accountReq)
 	if err != nil {
-		kelvins.ErrLogger.Errorf(ctx, "CreateAccount %v,err: %v, r: %+v", serverName, err, accountReq)
+		kelvins.ErrLogger.Errorf(ctx, "CreateAccount %v,err: %v, r: %v", serverName, err, json.MarshalToStringNoError(accountReq))
 		return err
 	}
 	if accountRsp.Common.Code != pay_business.RetCode_SUCCESS {
@@ -78,7 +78,7 @@ func UserRegisterNoticeConsume(ctx context.Context, body string) error {
 		case pay_business.RetCode_ACCOUNT_EXIST:
 			return nil
 		case pay_business.RetCode_ERROR, pay_business.RetCode_USER_NOT_EXIST:
-			kelvins.ErrLogger.Errorf(ctx, "CreateAccount %v,not ok : %v, rsp: %+v", serverName, err, accountRsp)
+			kelvins.ErrLogger.Errorf(ctx, "CreateAccount  req:%v, rsp: %+v", json.MarshalToStringNoError(accountReq), json.MarshalToStringNoError(accountRsp))
 			return fmt.Errorf(accountRsp.Common.Msg)
 		}
 	}
