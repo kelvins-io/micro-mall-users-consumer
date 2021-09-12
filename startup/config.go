@@ -7,8 +7,6 @@ import (
 
 const (
 	SectionEmailConfig             = "email-config"
-	//SectionQueueUserRegisterNotice = "queue-user-register-notice"
-	//SectionQueueUserStateNotice    = "queue-user-state-notice"
 	EmailNotice                    = "email-notice"
 )
 

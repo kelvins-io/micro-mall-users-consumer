@@ -46,7 +46,7 @@ func UserRegisterNoticeConsume(ctx context.Context, body string) error {
 	// 发送注册成功邮件
 	emailNotice := fmt.Sprintf(args.UserRegisterTemplate, notice.CountryCode, notice.Phone, notice.Time, args.UserStateText[notice.State])
 	for _, receiver := range vars.EmailNoticeSetting.Receivers {
-		err = email.SendEmailNotice(ctx, receiver, vars.AppName, emailNotice)
+		err = email.SendEmailNotice(ctx, receiver, kelvins.AppName, emailNotice)
 		if err != nil {
 			kelvins.ErrLogger.Info(ctx, "SendEmailNotice err %v, emailNotice: %v", err, emailNotice)
 		}
@@ -86,7 +86,7 @@ func UserRegisterNoticeConsume(ctx context.Context, body string) error {
 	// 发送初始个人账户成功邮件
 	emailNotice = fmt.Sprintf(args.UserCreateAccountTemplate, notice.CountryCode, notice.Phone, notice.Time, balanceInit)
 	for _, receiver := range vars.EmailNoticeSetting.Receivers {
-		err = email.SendEmailNotice(ctx, receiver, vars.AppName, emailNotice)
+		err = email.SendEmailNotice(ctx, receiver, kelvins.AppName, emailNotice)
 		if err != nil {
 			kelvins.ErrLogger.Info(ctx, "SendEmailNotice err %v, emailNotice: %v", err, emailNotice)
 		}

@@ -36,7 +36,7 @@ func UserStateNoticeConsume(ctx context.Context, body string) error {
 
 	emailNotice := fmt.Sprintf(args.UserPwdResetTemplate, userInfo.UserName, notice.Time)
 	for _, receiver := range vars.EmailNoticeSetting.Receivers {
-		err = email.SendEmailNotice(ctx, receiver, vars.AppName, emailNotice)
+		err = email.SendEmailNotice(ctx, receiver, kelvins.AppName, emailNotice)
 		if err != nil {
 			kelvins.ErrLogger.Info(ctx, "SendEmailNotice err %v, emailNotice: %v", err, emailNotice)
 		}
