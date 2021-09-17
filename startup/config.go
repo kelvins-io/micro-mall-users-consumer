@@ -6,8 +6,8 @@ import (
 )
 
 const (
-	SectionEmailConfig             = "email-config"
-	EmailNotice                    = "email-notice"
+	SectionEmailConfig = "email-config"
+	EmailNotice        = "email-notice"
 )
 
 // LoadConfig 加载配置对象映射

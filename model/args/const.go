@@ -11,7 +11,7 @@ type MerchantsMaterialInfo struct {
 }
 
 const (
-	RpcServiceMicroMallPay = "micro-mall-pay"
+	RpcServiceMicroMallPay   = "micro-mall-pay"
 	RpcServiceMicroMallUsers = "micro-mall-users"
 )
 
