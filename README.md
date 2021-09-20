@@ -58,6 +58,7 @@ ExchangeType = "direct"
 BindingKey = "user_register_notice"
 
 [email-config]
+Enable = false
 User = "urtyu@qq.com"
 Password = "urtyiirtirty"
 Host = "smtp.qq.com"
