@@ -27,9 +27,9 @@ func UserRegisterNoticeConsume(ctx context.Context, body string) error {
 		return nil
 	}
 	var notice args.UserRegisterNotice
-	err = json.Unmarshal(businessMsg.Msg, &notice)
+	err = json.Unmarshal(businessMsg.Content, &notice)
 	if err != nil {
-		kelvins.ErrLogger.Info(ctx, "businessMsg.Msg: %v Unmarshal err: %v", businessMsg.Msg, err)
+		kelvins.ErrLogger.Info(ctx, "businessMsg.Msg: %v Unmarshal err: %v", businessMsg.Content, err)
 		return err
 	}
 	time.Sleep(3 * time.Second) // 注册事务先提交
@@ -95,7 +95,6 @@ func UserRegisterNoticeConsume(ctx context.Context, body string) error {
 			}
 		}
 	}
-
 
 	return nil
 }

@@ -43,10 +43,10 @@ const (
 )
 
 type CommonBusinessMsg struct {
-	Type int    `json:"type"`
-	Tag  string `json:"tag"`
-	UUID string `json:"uuid"`
-	Msg  string `json:"msg"`
+	Type    int    `json:"type"`
+	Tag     string `json:"tag"`
+	UUID    string `json:"uuid"`
+	Content string `json:"content"`
 }
 
 type UserRegisterNotice struct {
