@@ -79,7 +79,7 @@ func UserRegisterNoticeConsume(ctx context.Context, body string) error {
 		switch accountRsp.Common.Code {
 		case pay_business.RetCode_ACCOUNT_EXIST:
 			return nil
-		case pay_business.RetCode_ERROR, pay_business.RetCode_USER_NOT_EXIST:
+		default:
 			kelvins.ErrLogger.Errorf(ctx, "CreateAccount  req:%v, rsp: %+v", json.MarshalToStringNoError(accountReq), json.MarshalToStringNoError(accountRsp))
 			return fmt.Errorf(accountRsp.Common.Msg)
 		}
