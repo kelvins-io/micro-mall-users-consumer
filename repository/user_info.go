@@ -5,10 +5,10 @@ import (
 	"gitee.com/kelvins-io/kelvins"
 )
 
-func GetUserNameByUid(uid int) (*mysql.User, error) {
+func GetUserInfoByUid(uid int) (*mysql.User, error) {
 	var user mysql.User
 	var err error
-	_, err = kelvins.XORM_DBEngine.Table(mysql.TableUser).Select("user_name").Where("id = ?", uid).Get(&user)
+	_, err = kelvins.XORM_DBEngine.Table(mysql.TableUser).Select("user_name,email").Where("id = ?", uid).Get(&user)
 	return &user, err
 }
 

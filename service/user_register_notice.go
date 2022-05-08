@@ -3,15 +3,15 @@ package service
 import (
 	"context"
 	"fmt"
+	"time"
+
 	"gitee.com/cristiane/micro-mall-users-consumer/model/args"
 	"gitee.com/cristiane/micro-mall-users-consumer/pkg/util"
 	"gitee.com/cristiane/micro-mall-users-consumer/pkg/util/email"
 	"gitee.com/cristiane/micro-mall-users-consumer/proto/micro_mall_pay_proto/pay_business"
 	"gitee.com/cristiane/micro-mall-users-consumer/repository"
-	"gitee.com/cristiane/micro-mall-users-consumer/vars"
 	"gitee.com/kelvins-io/common/json"
 	"gitee.com/kelvins-io/kelvins"
-	"time"
 )
 
 func UserRegisterNoticeConsume(ctx context.Context, body string) error {
@@ -34,7 +34,7 @@ func UserRegisterNoticeConsume(ctx context.Context, body string) error {
 	}
 	time.Sleep(3 * time.Second) // 注册事务先提交
 	// 获取用户信息
-	user, err := repository.GetUserByPhone("id,account_id", notice.CountryCode, notice.Phone)
+	user, err := repository.GetUserByPhone("id,account_id,email,user_name", notice.CountryCode, notice.Phone)
 	if err != nil {
 		kelvins.ErrLogger.Errorf(ctx, "GetUserByPhone ,err: %v, req: %v", err, json.MarshalToStringNoError(notice))
 		return err
@@ -44,13 +44,11 @@ func UserRegisterNoticeConsume(ctx context.Context, body string) error {
 		return fmt.Errorf("user not exist")
 	}
 	// 发送注册成功邮件
-	emailNotice := fmt.Sprintf(args.UserRegisterTemplate, notice.CountryCode, notice.Phone, notice.Time, args.UserStateText[notice.State])
-	if vars.EmailNoticeSetting != nil && vars.EmailNoticeSetting.Receivers != nil {
-		for _, receiver := range vars.EmailNoticeSetting.Receivers {
-			err = email.SendEmailNotice(ctx, receiver, kelvins.AppName, emailNotice)
-			if err != nil {
-				kelvins.ErrLogger.Info(ctx, "SendEmailNotice err %v, emailNotice: %v", err, emailNotice)
-			}
+	if user.Email != "" {
+		emailNotice := fmt.Sprintf(args.UserRegisterTemplate, user.UserName, businessMsg.Time, args.UserStateText[notice.State])
+		err = email.SendEmailNotice(ctx, user.Email, kelvins.AppName, emailNotice)
+		if err != nil {
+			kelvins.ErrLogger.Info(ctx, "SendEmailNotice err %v, emailNotice: %v", err, emailNotice)
 		}
 	}
 
@@ -86,13 +84,11 @@ func UserRegisterNoticeConsume(ctx context.Context, body string) error {
 	}
 
 	// 发送初始个人账户成功邮件
-	emailNotice = fmt.Sprintf(args.UserCreateAccountTemplate, notice.CountryCode, notice.Phone, notice.Time, balanceInit)
-	if vars.EmailNoticeSetting != nil && vars.EmailNoticeSetting.Receivers != nil {
-		for _, receiver := range vars.EmailNoticeSetting.Receivers {
-			err = email.SendEmailNotice(ctx, receiver, kelvins.AppName, emailNotice)
-			if err != nil {
-				kelvins.ErrLogger.Info(ctx, "SendEmailNotice err %v, emailNotice: %v", err, emailNotice)
-			}
+	if user.Email != "" {
+		emailNotice := fmt.Sprintf(args.UserCreateAccountTemplate, user.UserName, businessMsg.Time, balanceInit, "CNY")
+		err = email.SendEmailNotice(ctx, user.Email, kelvins.AppName, emailNotice)
+		if err != nil {
+			kelvins.ErrLogger.Info(ctx, "SendEmailNotice err %v, emailNotice: %v", err, emailNotice)
 		}
 	}
 
